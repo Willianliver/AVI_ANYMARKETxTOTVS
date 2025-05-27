@@ -27,20 +27,24 @@ def atualizar_planilha(arquivo, sku, id_prod_hub, sku_hub, inicio):
         print("Erro: Arquivo não encontrado.")
         return
 
-    for i in range(inicio + 21, inicio + 26):  # linhas 25 a 29
+    # Garante que a planilha tenha linhas suficientes
+    while len(df) <= inicio + 4:
+        df.loc[len(df)] = [""] * len(df.columns)
+
+    for i in range(inicio, inicio + 6):  # 5 linhas por bloco
         df.loc[i, 1] = sku
         df.loc[i, 2] = id_prod_hub
         df.loc[i, 3] = sku_hub
 
     df.to_csv(arquivo, sep=";", index=False, encoding="latin1", header=False)
-    print(f"SKU {sku} (ANY=2) atualizado nas linhas {inicio + 22} a {inicio + 26}.")
+    print(f"SKU {sku} (ANY=2) atualizado nas linhas {inicio + 1} a {inicio + 5}.")
 
 # Configuração
-arquivo = "SKUxCANAL Release ATT.csv"
+arquivo = "C:\\Automações\\Vincular Ids Anymarket\\SKUxCANAL_Release_ATT.csv"
 token = "259037346L1E1706474176096C161316217609600O1.I"
 
 # Loop
-bloco_atual = 24  # Começa na linha 25
+bloco_atual = 23  # Começa na linha 24 (índice 23)
 while True:
     sku_input = input("Digite o SKU: ")
     id_prod_hub_input = input("Digite o ID Prod Hub: ")
@@ -52,4 +56,5 @@ while True:
     if input("Deseja adicionar outro SKU? (s/n): ").strip().lower() != "s":
         break
 
-    bloco_atual += 6
+    # Pula 5 linhas preenchidas + 19 linhas de intervalo
+    bloco_atual += 26  # ou bloco_atual += 24
